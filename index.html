@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>フルマラソン大会ファインダー 2026-27 | エントリー日・抽選/先着で探せる大会一覧</title>
+<meta name="description" content="全国の主要フルマラソン60大会（2026-27シーズン）をエントリー日・抽選/先着・受付状況で検索。受付中の大会、これからエントリー開始の大会がひと目でわかります。">
+<meta property="og:title" content="フルマラソン大会ファインダー 2026-27">
+<meta property="og:description" content="全国の主要フルマラソンをエントリー日・抽選/先着・受付状況で検索できる一覧サイト">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23D51F45'/%3E%3Ctext x='32' y='43' font-family='Helvetica,Arial' font-size='28' font-weight='bold' fill='white' text-anchor='middle'%3E42%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --crimson:#D51F45; --orange:#EF7D00; --gold:#F7B000;
+  --ink:#1A1A1A; --gray:#6E6E6E; --gray2:#9C9C98;
+  --bargray:#D9D9D9; --tint:#FCEEEC; --tint2:#FBE7E3;
+  --line:#E3E0DA; --white:#FFFFFF;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:"Helvetica Neue","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic Medium","Meiryo",sans-serif;
+  font-feature-settings:"palt" 1,"kern" 1;
+  color:var(--ink); background:var(--white);
+  line-height:1.75; letter-spacing:0.04em; word-break:keep-all; overflow-wrap:anywhere;
+}
+.topbar{height:4px;background:linear-gradient(90deg,var(--crimson),var(--orange))}
+.wrap{max-width:1240px;margin:0 auto;padding:0 28px}
+header{padding:36px 0 8px}
+.kicker{font-size:11px;font-weight:700;letter-spacing:0.18em;color:var(--gray2);text-transform:uppercase}
+h1{font-size:30px;font-weight:700;line-height:1.4;margin-top:4px}
+h1 .accent{color:var(--crimson)}
+.lede{font-size:13px;color:var(--gray);margin-top:6px}
+/* サマリー */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0 18px}
+.stat{border:1px solid var(--line);border-radius:10px;padding:14px 18px;background:var(--white)}
+.stat .num{font-size:26px;font-weight:700;line-height:1.3}
+.stat .num.hot{color:var(--crimson)}
+.stat .num.soon{color:var(--orange)}
+.stat .label{font-size:12px;color:var(--gray);margin-top:2px}
+/* 検索パネル */
+.searchpanel{border:1px solid var(--line);border-radius:10px;background:var(--white);padding:20px 22px;margin-bottom:18px}
+input[type=search]{
+  width:100%;border:1px solid var(--line);border-radius:999px;
+  padding:9px 18px;font-size:14px;font-family:inherit;color:var(--ink);outline:none;
+}
+input[type=search]:focus{border-color:var(--crimson)}
+.chiprows{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.chiprow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chiprow .rowlabel{font-size:11px;font-weight:700;color:var(--gray2);letter-spacing:0.1em;min-width:64px}
+.chip{
+  border:1px solid var(--line);border-radius:999px;padding:4px 14px;font-size:12px;
+  color:var(--gray);background:var(--white);cursor:pointer;font-family:inherit;letter-spacing:0.04em;
+  min-height:28px;
+}
+.chip .cnt{font-size:11px;color:var(--gray2);margin-left:4px}
+.chip:hover{background:var(--tint2)}
+.chip.on{background:var(--tint);border-color:var(--crimson);color:var(--crimson);font-weight:700}
+.chip.on .cnt{color:var(--crimson)}
+/* 結果ヘッダー */
+.resulthead{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:0 0 12px}
+.resulthead h2{font-size:14px;font-weight:700;flex:1;min-width:150px}
+select{
+  border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:13px;
+  font-family:inherit;color:var(--ink);background:var(--white);outline:none;
+}
+.rescount{font-size:13px;color:var(--gray);white-space:nowrap}
+.rescount b{font-family:"Helvetica Neue",sans-serif;font-size:19px;font-weight:700;color:var(--crimson);margin-right:1px}
+/* 結果リスト: 単一コンテナ＋区切り線 */
+.results{border:1px solid var(--line);border-radius:10px;background:var(--white);margin-bottom:48px;overflow:hidden}
+.row{display:flex;gap:18px;align-items:flex-start;padding:18px 20px;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:none}
+.row:hover{background:var(--tint)}
+/* 日付タイル */
+.dtile{
+  width:80px;flex-shrink:0;border:1px solid var(--line);border-radius:8px;background:var(--white);
+  display:flex;flex-direction:column;align-items:center;padding:8px 4px 6px;line-height:1.35;
+}
+.dt-m{font-size:11px;font-weight:700;letter-spacing:0.08em;color:var(--gray2)}
+.dt-d{font-family:"Helvetica Neue",sans-serif;font-size:24px;font-weight:700;color:var(--ink)}
+.dt-d.tbd{font-size:13px;color:var(--gray2);padding:6px 0}
+.dt-w{font-size:11px;color:var(--gray)}
+.dt-w.red{color:var(--crimson);font-weight:700}
+.row .main{flex:1;min-width:0}
+.titleline{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.rname{font-size:16px;font-weight:700;line-height:1.5}
+.badge{border-radius:999px;padding:2px 12px;font-size:11px;font-weight:700;white-space:nowrap}
+.badge.open{background:var(--crimson);color:var(--white)}
+.badge.before{background:var(--orange);color:var(--white)}
+.badge.closed{background:var(--bargray);color:var(--gray)}
+.badge.soldout{border:1px solid var(--bargray);color:var(--gray);background:var(--white)}
+.badge.tba{border:1px solid var(--line);color:var(--gray2);background:var(--white)}
+.pill{border:1px solid var(--line);border-radius:999px;padding:1px 10px;font-size:11px;font-weight:700;color:var(--ink);white-space:nowrap}
+.meta{font-size:13px;color:var(--gray);margin-top:5px;display:flex;flex-wrap:wrap;column-gap:16px;row-gap:2px}
+.meta b{color:var(--ink);font-weight:700}
+.meta .prev{color:var(--gray2)}
+.deadline{color:var(--crimson);font-weight:700}
+.tagline{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+.tag{background:var(--tint2);border-radius:999px;padding:1px 10px;font-size:11px;color:var(--ink)}
+.tag.outline{background:var(--white);border:1px solid var(--line);color:var(--gray)}
+.note{font-size:11px;color:var(--gray2);margin-left:4px}
+.side{width:170px;flex-shrink:0;text-align:right;display:flex;flex-direction:column;gap:5px;align-items:flex-end}
+.pop{font-size:13px;letter-spacing:0.2em;color:var(--gold);white-space:nowrap}
+.pop .off{color:var(--line)}
+.pop .poplabel{font-size:11px;color:var(--gray2);letter-spacing:0.04em;margin-right:4px}
+.cap{font-size:12px;color:var(--gray)}
+.links{font-size:12px;margin-top:2px}
+.links a{color:var(--orange);font-weight:700;text-decoration:none;padding:4px 0}
+.links a:hover{text-decoration:underline}
+.links a.sub{color:var(--gray2);font-weight:400;margin-left:10px}
+.empty{padding:60px 0;text-align:center;color:var(--gray2);font-size:14px}
+footer{border-top:1px solid var(--line);padding:20px 0 40px;font-size:11px;color:var(--gray2);line-height:1.9}
+footer a{color:var(--gray2)}
+@media(max-width:768px){
+  .wrap{padding:0 16px}
+  h1{font-size:24px}
+  .stats{grid-template-columns:repeat(2,1fr);gap:10px}
+  .stat{padding:12px 14px}
+  .stat .num{font-size:22px}
+  .stat .label{word-break:normal;line-height:1.5}
+  .searchpanel{padding:16px}
+  .chiprow{align-items:flex-start}
+  .chiprow .rowlabel{padding-top:5px}
+  .resulthead h2{flex-basis:100%}
+  .row{flex-direction:column;gap:8px;padding:16px}
+  .dtile{width:auto;flex-direction:row;gap:3px;padding:2px 10px;align-items:baseline;border:none;background:var(--tint2);border-radius:999px}
+  .dt-d{font-size:15px}
+  .dt-d.tbd{padding:0;font-size:12px}
+  .side{width:100%;flex-direction:row;justify-content:space-between;align-items:center;text-align:left}
+}
+@media(max-width:420px){
+  .rescount .total{display:none}
+}
+</style>
+</head>
+<body>
+<div class="topbar"></div>
+<div class="wrap">
+<header>
+  <p class="kicker">FULL MARATHON RACE FINDER</p>
+  <h1>フルマラソン<span class="accent">大会ファインダー</span></h1>
+  <p class="lede">全国の主要フルマラソン・2026-27シーズン。エントリー日・抽選/先着・受付状況をまとめて検索。週1回の巡回チェックで更新。</p>
+</header>
+
+<div class="stats" id="stats"></div>
+
+<div class="searchpanel">
+  <input type="search" id="q" placeholder="大会名・開催地・特徴で検索">
+  <div class="chiprows" id="chiprows"></div>
+</div>
+
+<div class="resulthead">
+  <h2>大会検索結果一覧</h2>
+  <select id="sort">
+    <option value="race">開催日順</option>
+    <option value="entry">エントリー開始日順</option>
+    <option value="pop">人気順</option>
+  </select>
+  <span class="rescount" id="count"></span>
+</div>
+
+<div class="results" id="list"></div>
+
+<footer>
+  掲載情報は各大会公式サイト等の調査に基づく参考情報です。エントリー前に必ず大会公式サイトで最新情報を確認してください。
+  人気・レース特徴の評価は運営者の主観による初期値です。<br>
+  誤りの指摘・掲載リクエストは <a href="https://github.com/kazuto32desu/marathon-race-finder" target="_blank" rel="noopener">GitHub</a> まで。
+</footer>
+</div>
+
+<script id="race-data" type="application/json">{"season": "2026-27", "generated": null, "races": [{"name": "北海道マラソン", "location": "北海道札幌市", "region": "北海道", "sort_date": "2026-08-30", "entry_sort_date": "2026-03-31", "race_date": "2026-08-30", "race_date_note": null, "race_announced": true, "entry_start": "2026-03-31", "entry_note": null, "entry_announced": true, "entry_end": null, "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 20000, "race_types": ["フル"], "time_limit": "6時間", "course_profile": "不明", "notes": "先着即完売の大規模都市型フル", "official_url": "https://hokkaido-marathon.com/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=386516&div=1", "closed_early": true, "popularity": 3, "feature": null, "sources": ["https://hokkaido-marathon.com/overview/"]}, {"name": "日本最北端わっかない平和マラソン", "location": "北海道稚内市", "region": "北海道", "sort_date": "2026-09-06", "entry_sort_date": "2026-04-01", "race_date": "2026-09-06", "race_date_note": null, "race_announced": true, "entry_start": "2026-04-01", "entry_note": null, "entry_announced": true, "entry_end": "2026-06-30", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 1000, "race_types": ["フル", "8km", "5km", "2km"], "time_limit": "6時間30分", "course_profile": "不明", "notes": "日本最北端発着、迂回路少なく直線的", "official_url": "https://wakkanai-marathon.jp/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=387995&div=1", "closed_early": false, "popularity": 1, "feature": null, "sources": ["https://wakkanai-marathon.jp/outline/"]}, {"name": "田沢湖マラソン", "location": "秋田県仙北市", "region": "東北", "sort_date": "2026-09-20", "entry_sort_date": "2026-04-01", "race_date": "2026-09-20", "race_date_note": null, "race_announced": true, "entry_start": "2026-04-01", "entry_note": null, "entry_announced": true, "entry_end": "2026-06-10", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 1600, "race_types": ["フル", "20km", "10km"], "time_limit": "6時間", "course_profile": "起伏あり", "notes": "湖畔周回、高低差約90mの起伏コース", "official_url": "https://tazawako-marathon.com/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=388457&div=1", "closed_early": false, "popularity": 1, "feature": "ファンラン", "sources": ["https://tazawako-marathon.com/info/"]}, {"name": "オホーツク網走マラソン", "location": "北海道網走市", "region": "北海道", "sort_date": "2026-09-27", "entry_sort_date": "2026-04-01", "race_date": "2026-09-27", "race_date_note": null, "race_announced": true, "entry_start": "2026-04-01", "entry_note": null, "entry_announced": true, "entry_end": "2026-07-16", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 2600, "race_types": ["フル", "5km", "3km"], "time_limit": "6時間30分", "course_profile": "起伏あり", "notes": "前半上り基調、後半オホーツク海岸線", "official_url": "https://www.abashiri-marathon.jp/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=387994&div=1", "closed_early": false, "popularity": 1, "feature": "ファンラン", "sources": ["https://www.abashiri-marathon.jp/feature/"]}, {"name": "別海町パイロットマラソン", "location": "北海道別海町", "region": "北海道", "sort_date": "2026-10-04", "entry_sort_date": "2026-05-22", "race_date": "2026-10-04", "race_date_note": null, "race_announced": true, "entry_start": "2026-05-22", "entry_note": null, "entry_announced": true, "entry_end": null, "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 1300, "race_types": ["フル", "5km"], "time_limit": "5時間20分", "course_profile": "フラット", "notes": "酪農地帯のミルクロードをほぼ直進", "official_url": "https://betsukai-marathon.jp/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=389437&div=1", "closed_early": false, "popularity": 1, "feature": "記録狙い", "sources": ["https://betsukai-marathon.jp/outline/"]}, {"name": "いわて盛岡シティマラソン", "location": "岩手県盛岡市", "region": "東北", "sort_date": "2026-10-04", "entry_sort_date": "2026-04-01", "race_date": "2026-10-04", "race_date_note": null, "race_announced": true, "entry_start": "2026-04-01", "entry_note": null, "entry_announced": true, "entry_end": "2026-07-20", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 6000, "race_types": ["フル", "ファンラン12.1km"], "time_limit": "6時間", "course_profile": "フラット", "notes": "2024年改修で高低差縮小、記録向き", "official_url": "https://iwate-morioka-city-marathon.jp/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=386495&div=1", "closed_early": false, "popularity": 2, "feature": "記録狙い", "sources": ["https://iwate-morioka-city-marathon.jp/outline/"]}, {"name": "新潟シティマラソン", "location": "新潟県新潟市", "region": "北陸・甲信越", "sort_date": "2026-10-11", "entry_sort_date": "2026-04-08", "race_date": "2026-10-11", "race_date_note": null, "race_announced": true, "entry_start": "2026-04-08", "entry_note": null, "entry_announced": true, "entry_end": "2026-06-30", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 12000, "race_types": ["フル", "ファンラン10.6km"], "time_limit": "7時間", "course_profile": "フラット", "notes": "最大高低差30mの平坦な都市型コース", "official_url": "https://runfes-niigata.com/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=387659&div=1", "closed_early": false, "popularity": 2, "feature": "両方", "sources": ["https://runfes-niigata.com/requirements/"]}, {"name": "長井マラソン", "location": "山形県長井市", "region": "東北", "sort_date": "2026-10-18", "entry_sort_date": "2026-05-14", "race_date": "2026-10-18", "race_date_note": null, "race_announced": true, "entry_start": "2026-05-14", "entry_note": null, "entry_announced": true, "entry_end": "2026-08-18", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": null, "race_types": ["フル", "ハーフ"], "time_limit": "5時間30分", "course_profile": "フラット", "notes": "比較的平坦、芋煮とシャインマスカット", "official_url": "https://nagai-marathon.jp/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=387699&div=1", "closed_early": false, "popularity": 1, "feature": "記録狙い", "sources": ["https://runnet.jp/smp/racematome/260520.html"]}, {"name": "金沢マラソン", "location": "石川県金沢市", "region": "北陸・甲信越", "sort_date": "2026-10-25", "entry_sort_date": "2026-04-10", "race_date": "2026-10-25", "race_date_note": null, "race_announced": true, "entry_start": "2026-04-10", "entry_note": null, "entry_announced": true, "entry_end": "2026-05-20", "entry_method": "抽選", "canceled": false, "canceled_note": null, "capacity_full": 15000, "race_types": ["フル", "ファンラン"], "time_limit": "7時間", "course_profile": "不明", "notes": "国内外1.5万人規模、市街地周遊", "official_url": "https://www.kanazawa-marathon.jp/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=388653&div=1", "closed_early": false, "popularity": 3, "feature": null, "sources": ["https://kanazawa-marathon.jp/outline/"]}, {"name": "水戸黄門漫遊マラソン", "location": "茨城県水戸市", "region": "関東", "sort_date": "2026-10-25", "entry_sort_date": "2026-04-24", "race_date": "2026-10-25", "race_date_note": null, "race_announced": true, "entry_start": "2026-04-24", "entry_note": null, "entry_announced": true, "entry_end": "2026-06-30", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 10000, "race_types": ["フル"], "time_limit": "6時間", "course_profile": "起伏あり", "notes": "偕楽園・千波湖畔、終盤に上り坂", "official_url": "https://mitokomon-manyu-marathon.com/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=387694&div=1", "closed_early": false, "popularity": 2, "feature": "ファンラン", "sources": ["https://mitokomon-manyu-marathon.com/about/"]}, {"name": "しまだ大井川マラソンinリバティ", "location": "静岡県島田市", "region": "東海", "sort_date": "2026-10-25", "entry_sort_date": "2026-05-01", "race_date": "2026-10-25", "race_date_note": null, "race_announced": true, "entry_start": "2026-05-01", "entry_note": null, "entry_announced": true, "entry_end": "2026-06-30", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": null, "race_types": ["フル"], "time_limit": "7時間", "course_profile": "フラット", "notes": "河川敷コース、関門なしのフラット", "official_url": "https://www.shimada-marathon.jp/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=387657&div=1", "closed_early": false, "popularity": 1, "feature": "記録狙い", "sources": ["https://www.shimada-marathon.jp/"]}, {"name": "横浜マラソン", "location": "神奈川県横浜市", "region": "関東", "sort_date": "2026-10-25", "entry_sort_date": "2026-04-08", "race_date": "2026-10-25", "race_date_note": null, "race_announced": true, "entry_start": "2026-04-08", "entry_note": null, "entry_announced": true, "entry_end": "2026-05-17", "entry_method": "抽選+先着", "canceled": false, "canceled_note": null, "capacity_full": 22300, "race_types": ["フル", "ハイウェイラン"], "time_limit": null, "course_profile": "起伏あり", "notes": "首都高湾岸線区間あり、後半に坂", "official_url": "https://yokohamamarathon.jp/", "runnet_url": null, "closed_early": false, "popularity": 3, "feature": "ファンラン", "sources": ["https://yokohamamarathon.jp/entryguidance/"]}, {"name": "富山マラソン", "location": "富山県 富山市・高岡市・射水市", "region": "北陸・甲信越", "sort_date": "2026-11-01", "entry_sort_date": "2026-04-11", "race_date": "2026-11-01", "race_date_note": null, "race_announced": true, "entry_start": "2026-04-11", "entry_note": null, "entry_announced": true, "entry_end": "2026-06-30", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 13000, "race_types": ["フル", "ジョギング4km"], "time_limit": "7時間", "course_profile": "不明", "notes": "富山湾と立山連峰を望む田園コース", "official_url": "https://www.toyamamarathon.com/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=388033&div=1", "closed_early": false, "popularity": 2, "feature": null, "sources": ["https://www.toyamamarathon.com/about/"]}, {"name": "下関海響マラソン", "location": "山口県下関市", "region": "中国", "sort_date": "2026-11-01", "entry_sort_date": "2026-05-15", "race_date": "2026-11-01", "race_date_note": null, "race_announced": true, "entry_start": "2026-05-15", "entry_note": null, "entry_announced": true, "entry_end": "2026-07-12", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 10000, "race_types": ["フル", "2kmファンラン"], "time_limit": "6時間", "course_profile": "起伏あり", "notes": "前半フラット、後半20km以降に坂4本", "official_url": "https://kaikyomarathon.jp/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=390075&div=1", "closed_early": false, "popularity": 2, "feature": "ファンラン", "sources": ["https://kaikyomarathon.jp/outline/"]}, {"name": "あいの土山マラソン", "location": "滋賀県甲賀市", "region": "関西", "sort_date": "2026-11-01", "entry_sort_date": "2026-06-14", "race_date": "2026-11-01", "race_date_note": null, "race_announced": true, "entry_start": "2026-06-14", "entry_note": null, "entry_announced": true, "entry_end": "2026-08-10", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": null, "race_types": ["フル", "ハーフ"], "time_limit": "5時間", "course_profile": "起伏あり", "notes": "コース中盤に「激坂」の名物区間", "official_url": "https://www.ac-koka.jp/marathon/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=391433&div=1", "closed_early": false, "popularity": 1, "feature": "ファンラン", "sources": ["https://www.ac-koka.jp/marathon/2026/26_outline.html"]}, {"name": "ぐんまマラソン", "location": "群馬県 前橋市・高崎市", "region": "関東", "sort_date": "2026-11-03", "entry_sort_date": "2026-04-09", "race_date": "2026-11-03", "race_date_note": null, "race_announced": true, "entry_start": "2026-04-09", "entry_note": null, "entry_announced": true, "entry_end": "2026-08-17", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 5500, "race_types": ["フル", "10km"], "time_limit": "6時間", "course_profile": "不明", "notes": "前橋発着、陸連公認コースの大規模大会", "official_url": "https://www.g-marathon.com/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=388460&div=1", "closed_early": true, "popularity": 2, "feature": null, "sources": ["https://www.g-marathon.com/about-guide/"]}, {"name": "福岡マラソン", "location": "福岡県 福岡市・糸島市", "region": "九州・沖縄", "sort_date": "2026-11-08", "entry_sort_date": "2026-04-20", "race_date": "2026-11-08", "race_date_note": null, "race_announced": true, "entry_start": "2026-04-20", "entry_note": null, "entry_announced": true, "entry_end": "2026-05-20", "entry_method": "抽選+先着", "canceled": false, "canceled_note": null, "capacity_full": 13000, "race_types": ["フル", "車いす", "ファンラン"], "time_limit": "7時間", "course_profile": "不明", "notes": "天神発、糸島がゴールの海沿いコース", "official_url": "https://www.f-marathon.jp/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=387698&div=1", "closed_early": false, "popularity": 3, "feature": null, "sources": ["https://www.f-marathon.jp/about/"]}, {"name": "作.AC真駒内マラソン", "location": "北海道札幌市", "region": "北海道", "sort_date": "2026-11-08", "entry_sort_date": "2026-07-18", "race_date": "2026-11-08", "race_date_note": null, "race_announced": true, "entry_start": "2026-07-18", "entry_note": null, "entry_announced": true, "entry_end": "2026-10-06", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 1300, "race_types": ["フル", "10km", "2.8km"], "time_limit": null, "course_profile": "不明", "notes": "札幌真駒内発、先着順の地域密着型大会", "official_url": "https://sakumara.jp/", "runnet_url": null, "closed_early": false, "popularity": 1, "feature": null, "sources": ["https://sakumara.jp/outline/"]}, {"name": "ひたちシーサイドマラソン", "location": "茨城県日立市", "region": "関東", "sort_date": "2026-11-15", "entry_sort_date": "2026-04-13", "race_date": "2026-11-15", "race_date_note": null, "race_announced": true, "entry_start": "2026-04-13", "entry_note": null, "entry_announced": true, "entry_end": "2026-08-31", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 6000, "race_types": ["フル"], "time_limit": null, "course_profile": "不明", "notes": "太平洋の堤防を走る「修行マラソン」", "official_url": "https://hitachi-marathon.jp/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=387696&div=1", "closed_early": false, "popularity": 2, "feature": null, "sources": ["https://hitachi-marathon.jp/"]}, {"name": "神戸マラソン", "location": "兵庫県神戸市", "region": "関西", "sort_date": "2026-11-15", "entry_sort_date": "2026-04-17", "race_date": "2026-11-15", "race_date_note": null, "race_announced": true, "entry_start": "2026-04-17", "entry_note": null, "entry_announced": true, "entry_end": "2026-06-01", "entry_method": "抽選", "canceled": false, "canceled_note": null, "capacity_full": 20000, "race_types": ["フル", "リレーマラソン"], "time_limit": "6時間30分", "course_profile": "不明", "notes": "神戸市街〜明石海岸折返しの都市型", "official_url": "https://kobe-marathon.net/2026/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=388536&div=1", "closed_early": false, "popularity": 3, "feature": null, "sources": ["https://kobe-marathon.net/2026/race/essentials/"]}, {"name": "福知山マラソン", "location": "京都府福知山市", "region": "関西", "sort_date": "2026-11-22", "entry_sort_date": "2026-06-01", "race_date": "2026-11-22", "race_date_note": null, "race_announced": true, "entry_start": "2026-06-01", "entry_note": null, "entry_announced": true, "entry_end": null, "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 6000, "race_types": ["フル", "ペアリレーマラソン"], "time_limit": "6時間", "course_profile": "不明", "notes": "由良川沿いを往復、紅葉が見どころ", "official_url": "https://fukuchiyama-marathon.com/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=389853&div=1", "closed_early": false, "popularity": 2, "feature": null, "sources": ["https://fukuchiyama-marathon.com/outline/"]}, {"name": "つくばマラソン", "location": "茨城県つくば市", "region": "関東", "sort_date": "2026-11-22", "entry_sort_date": "2026-07-05", "race_date": "2026-11-22", "race_date_note": null, "race_announced": true, "entry_start": "2026-07-05", "entry_note": null, "entry_announced": true, "entry_end": "2026-07-27", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 11000, "race_types": ["フル"], "time_limit": null, "course_profile": "フラット", "notes": "筑波山望む平坦な研究学園都市コース", "official_url": "https://www.tsukuba-marathon.com/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=391457&div=1", "closed_early": true, "popularity": 3, "feature": "両方", "sources": ["https://www.tsukuba-marathon.com/"]}, {"name": "大田原マラソン", "location": "栃木県大田原市", "region": "関東", "sort_date": "2026-11-23", "entry_sort_date": "2026-06-06", "race_date": "2026-11-23", "race_date_note": null, "race_announced": true, "entry_start": "2026-06-06", "entry_note": null, "entry_announced": true, "entry_end": "2026-07-07", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 3000, "race_types": ["フル", "10km"], "time_limit": "4時間", "course_profile": "不明", "notes": "制限4時間、記録志向の上級者向け", "official_url": "https://www.ohtawara-marathon.com/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=391575&div=1", "closed_early": false, "popularity": 1, "feature": null, "sources": ["https://www.ohtawara-marathon.com/outline/"]}, {"name": "ヨロンマラソン", "location": "鹿児島県与論町", "region": "九州・沖縄", "sort_date": "2026-11-29", "entry_sort_date": "2026-07-01", "race_date": "2026-11-29", "race_date_note": null, "race_announced": true, "entry_start": "2025-07-01", "entry_note": null, "entry_announced": false, "entry_end": null, "entry_method": "不明", "canceled": false, "canceled_note": null, "capacity_full": null, "race_types": ["フル", "ハーフ"], "time_limit": "7時間", "course_profile": "不明", "notes": "離島ヨロン島を巡る自然豊かなコース", "official_url": "https://www.yoronmarathon.com/", "runnet_url": null, "closed_early": false, "popularity": 1, "feature": null, "sources": ["https://www.yoronmarathon.com/"]}, {"name": "湘南国際マラソン", "location": "神奈川県大磯町　他", "region": "関東", "sort_date": "2026-12-06", "entry_sort_date": "2026-04-04", "race_date": "2026-12-06", "race_date_note": null, "race_announced": true, "entry_start": "2026-04-04", "entry_note": null, "entry_announced": true, "entry_end": null, "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": null, "race_types": ["フル", "10km"], "time_limit": "5時間45分", "course_profile": "フラット", "notes": "西湘バイパス〜江の島の海沿いコース", "official_url": "https://www.shonan-kokusai.jp/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=388503&div=1", "closed_early": false, "popularity": 3, "feature": "記録狙い", "sources": ["https://www.shonan-kokusai.jp/outline/"]}, {"name": "国宝松江城マラソン", "location": "島根県松江市", "region": "中国", "sort_date": "2026-12-06", "entry_sort_date": "2026-06-01", "race_date": "2026-12-06", "race_date_note": null, "race_announced": true, "entry_start": "2026-06-01", "entry_note": null, "entry_announced": true, "entry_end": "2026-09-30", "entry_method": "不明", "canceled": false, "canceled_note": null, "capacity_full": null, "race_types": ["フル", "ファンラン"], "time_limit": null, "course_profile": "不明", "notes": "宍道湖畔・松江城を巡る周遊コース", "official_url": "https://www.matsuejo-marathon.jp/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=389795&div=1", "closed_early": false, "popularity": 1, "feature": null, "sources": ["https://www.matsuejo-marathon.jp/outline/168"]}, {"name": "防府読売マラソン大会", "location": "山口県防府市", "region": "中国", "sort_date": "2026-12-06", "entry_sort_date": "2026-06-22", "race_date": "2026-12-06", "race_date_note": null, "race_announced": true, "entry_start": "2026-06-22", "entry_note": null, "entry_announced": true, "entry_end": "2026-07-06", "entry_method": "抽選", "canceled": false, "canceled_note": null, "capacity_full": 3000, "race_types": ["フル"], "time_limit": "4時間", "course_profile": "フラット", "notes": "高低差10m未満、記録が出やすい平坦", "official_url": "https://hofu-yomiuri.jp/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=391581&div=1", "closed_early": false, "popularity": 1, "feature": "記録狙い", "sources": ["https://hofu-yomiuri.jp/guideline/"]}, {"name": "奈良マラソン", "location": "奈良県 奈良市・天理市", "region": "関西", "sort_date": "2026-12-12", "entry_sort_date": "2026-06-05", "race_date": "2026-12-12", "race_date_note": "12/12・13の2日間", "race_announced": true, "entry_start": "2026-06-05", "entry_note": null, "entry_announced": true, "entry_end": "2026-06-23", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 11750, "race_types": ["フル", "ペアリレー", "10km", "ミニマラソン"], "time_limit": "5時間30分", "course_profile": "不明", "notes": "平城宮跡など世界遺産を巡るコース", "official_url": "https://www.nara-marathon.jp/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=391335&div=1", "closed_early": false, "popularity": 2, "feature": null, "sources": ["https://www.nara-marathon.jp/guidelines.html"]}, {"name": "富士山マラソン兼日本IDフルマラソン選手権大会", "location": "山梨県富士河口湖町", "region": "北陸・甲信越", "sort_date": "2026-12-12", "entry_sort_date": "2026-04-20", "race_date": "2026-12-12", "race_date_note": "12/12・13の2日間", "race_announced": true, "entry_start": "2026-04-20", "entry_note": null, "entry_announced": true, "entry_end": "2026-05-04", "entry_method": "不明", "canceled": false, "canceled_note": null, "capacity_full": null, "race_types": ["フル", "河口湖一周17km", "ファンラン10.5km"], "time_limit": "6時間", "course_profile": "不明", "notes": "河口湖・西湖周回、富士山を望む", "official_url": "https://mtfujimarathon.com/", "runnet_url": null, "closed_early": false, "popularity": 1, "feature": null, "sources": ["https://mtfujimarathon.com/full-marathon/"]}, {"name": "青島太平洋マラソン", "location": "宮崎県宮崎市", "region": "九州・沖縄", "sort_date": "2026-12-13", "entry_sort_date": "2026-06-17", "race_date": "2026-12-13", "race_date_note": null, "race_announced": true, "entry_start": "2026-06-17", "entry_note": null, "entry_announced": true, "entry_end": "2026-06-30", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 10800, "race_types": ["フル", "10km", "3kmファンラン"], "time_limit": "6時間20分", "course_profile": "不明", "notes": "太平洋沿い、高校生の声援が名物", "official_url": "https://www.aotai.gr.jp/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=391541&div=1", "closed_early": false, "popularity": 2, "feature": null, "sources": ["https://www.aotai.gr.jp/about/"]}, {"name": "みえ松阪マラソン", "location": "三重県松阪市", "region": "東海", "sort_date": "2026-12-20", "entry_sort_date": "2026-06-01", "race_date": "2026-12-20", "race_date_note": null, "race_announced": true, "entry_start": "2026-06-01", "entry_note": null, "entry_announced": true, "entry_end": "2026-07-31", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": null, "race_types": ["フル", "ファンラン", "健康ウオーク"], "time_limit": "7時間", "course_profile": "起伏あり", "notes": "坂と風が特徴のタフな県内唯一フル", "official_url": "https://mie-matsusaka-marathon.jp/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=390073&div=1", "closed_early": true, "popularity": 1, "feature": "ファンラン", "sources": ["https://mie-matsusaka-marathon.jp/essential/"]}, {"name": "いぶすき菜の花マラソン", "location": "鹿児島県指宿市", "region": "九州・沖縄", "sort_date": "2027-01-11", "entry_sort_date": "2026-08-01", "race_date": "2026-01-11", "race_date_note": null, "race_announced": false, "entry_start": "2025-08-01", "entry_note": null, "entry_announced": false, "entry_end": null, "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 10000, "race_types": ["フル"], "time_limit": "8時間", "course_profile": "不明", "notes": "菜の花と開聞岳を望む絶景コース", "official_url": "https://ibusuki-nanohana.com/", "runnet_url": null, "closed_early": false, "popularity": 2, "feature": null, "sources": ["https://ibusuki-nanohana.com/essentials/"]}, {"name": "にしおマラソン", "location": "愛知県西尾市", "region": "東海", "sort_date": "2027-01-18", "entry_sort_date": "2026-07-18", "race_date": "2026-01-18", "race_date_note": null, "race_announced": false, "entry_start": "2025-07-18", "entry_note": null, "entry_announced": false, "entry_end": null, "entry_method": "不明", "canceled": false, "canceled_note": null, "capacity_full": 6000, "race_types": ["フル", "5km", "2km"], "time_limit": "6時間30分", "course_profile": "不明", "notes": "西尾市発の新設マラソン大会", "official_url": "https://nishio-marathon.jp/", "runnet_url": null, "closed_early": false, "popularity": 2, "feature": null, "sources": ["https://nishio-marathon.jp/"]}, {"name": "石垣島マラソン", "location": "沖縄県石垣市", "region": "九州・沖縄", "sort_date": "2027-01-18", "entry_sort_date": "2026-08-20", "race_date": "2026-01-18", "race_date_note": null, "race_announced": false, "entry_start": "2025-08-20", "entry_note": null, "entry_announced": false, "entry_end": null, "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": null, "race_types": ["フル", "ハーフ", "10km"], "time_limit": "7時間", "course_profile": "不明", "notes": "石垣島の南国リゾートを走る大会", "official_url": "https://www.ishigakijima-marathon.jp/", "runnet_url": null, "closed_early": false, "popularity": 1, "feature": null, "sources": ["https://www.ishigakijima-marathon.jp/outline/"]}, {"name": "館山若潮マラソン", "location": "千葉県館山市", "region": "関東", "sort_date": "2027-01-25", "entry_sort_date": "2026-09-14", "race_date": "2026-01-25", "race_date_note": null, "race_announced": false, "entry_start": "2025-09-14", "entry_note": null, "entry_announced": false, "entry_end": null, "entry_method": "不明", "canceled": false, "canceled_note": null, "capacity_full": 5000, "race_types": ["フル", "10km", "ファンラン2km"], "time_limit": "6時間", "course_profile": "不明", "notes": "館山湾を望む南房総の大会", "official_url": "https://tateyama-wakasio.jp/", "runnet_url": null, "closed_early": false, "popularity": 2, "feature": null, "sources": ["https://tateyama-wakasio.jp/outline/"]}, {"name": "勝田全国マラソン", "location": "茨城県ひたちなか市～東海村", "region": "関東", "sort_date": "2027-01-25", "entry_sort_date": "2026-09-26", "race_date": "2026-01-25", "race_date_note": null, "race_announced": false, "entry_start": "2025-09-26", "entry_note": null, "entry_announced": false, "entry_end": null, "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 12000, "race_types": ["フル", "10km"], "time_limit": "6時間", "course_profile": "不明", "notes": "サブ3ランナーに人気の「本命レース」", "official_url": "https://katsutamarathon.jp/", "runnet_url": null, "closed_early": false, "popularity": 2, "feature": null, "sources": ["https://katsutamarathon.jp/"]}, {"name": "別府大分毎日マラソン大会", "location": "大分県 別府市・大分市", "region": "九州・沖縄", "sort_date": "2027-02-01", "entry_sort_date": "2026-08-29", "race_date": "2026-02-01", "race_date_note": null, "race_announced": false, "entry_start": "2025-08-29", "entry_note": null, "entry_announced": false, "entry_end": null, "entry_method": "抽選+先着", "canceled": false, "canceled_note": null, "capacity_full": 4000, "race_types": ["フル"], "time_limit": "3時間20分(40km関門)", "course_profile": "不明", "notes": "出走資格記録制のエリート大会", "official_url": "https://www.betsudai.com/", "runnet_url": null, "closed_early": false, "popularity": 1, "feature": null, "sources": ["https://www.betsudai.com/outline/"]}, {"name": "紀州口熊野マラソン", "location": "和歌山県上富田町", "region": "関西", "sort_date": "2027-02-01", "entry_sort_date": "2026-09-26", "race_date": "2026-02-01", "race_date_note": null, "race_announced": false, "entry_start": "2025-09-26", "entry_note": null, "entry_announced": false, "entry_end": null, "entry_method": "不明", "canceled": false, "canceled_note": null, "capacity_full": 1500, "race_types": ["フル", "ハーフ", "2km"], "time_limit": "6時間", "course_profile": "不明", "notes": "世界遺産・熊野古道沿いを走る大会", "official_url": "https://kuchikumano-marathon.jp/", "runnet_url": null, "closed_early": false, "popularity": 1, "feature": null, "sources": ["https://kuchikumano-marathon.jp/"]}, {"name": "愛媛マラソン", "location": "愛媛県松山市", "region": "四国", "sort_date": "2027-02-07", "entry_sort_date": "2026-08-01", "race_date": "2027-02-07", "race_date_note": null, "race_announced": true, "entry_start": "2025-08-01", "entry_note": null, "entry_announced": false, "entry_end": null, "entry_method": "抽選+先着", "canceled": false, "canceled_note": null, "capacity_full": null, "race_types": ["フル"], "time_limit": "6時間", "course_profile": "不明", "notes": "松山市街を走る四国最大級の大会", "official_url": "https://ehimemarathon.jp/", "runnet_url": null, "closed_early": false, "popularity": 1, "feature": null, "sources": ["https://ehimemarathon.jp/"]}, {"name": "さいたまマラソン", "location": "埼玉県さいたま市", "region": "関東", "sort_date": "2027-02-14", "entry_sort_date": "2026-07-15", "race_date": "2027-02-14", "race_date_note": null, "race_announced": true, "entry_start": "2026-07-15", "entry_note": null, "entry_announced": true, "entry_end": null, "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": null, "race_types": ["フル", "8km"], "time_limit": "6時間", "course_profile": "フラット", "notes": "さいたま新都心発着の都市型フラット", "official_url": "https://saitama-marathon.jp/", "runnet_url": "https://runnet.jp/entry/runtes/user/pc/competitionDetailAction.do?raceId=392524&div=1", "closed_early": true, "popularity": 3, "feature": "記録狙い", "sources": ["https://saitama-marathon.jp/"]}, {"name": "高知龍馬マラソン", "location": "高知県 高知市・南国市・土佐市", "region": "四国", "sort_date": "2027-02-15", "entry_sort_date": "2026-08-01", "race_date": "2026-02-15", "race_date_note": null, "race_announced": false, "entry_start": "2026-08-01", "entry_note": null, "entry_announced": true, "entry_end": null, "entry_method": "不明", "canceled": false, "canceled_note": null, "capacity_full": 10000, "race_types": ["フル", "ファンラン", "ペアリレー"], "time_limit": "7時間", "course_profile": "不明", "notes": "高知市中心部発着の大会", "official_url": "https://ryoma-marathon.jp/", "runnet_url": null, "closed_early": false, "popularity": 2, "feature": null, "sources": ["https://ryoma-marathon.jp/"]}, {"name": "北九州マラソン", "location": "福岡県北九州市", "region": "九州・沖縄", "sort_date": "2027-02-15", "entry_sort_date": "2026-08-08", "race_date": "2026-02-15", "race_date_note": null, "race_announced": false, "entry_start": "2025-08-08", "entry_note": null, "entry_announced": false, "entry_end": null, "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 10800, "race_types": ["フル", "ペアリレー", "ファンラン"], "time_limit": "6時間", "course_profile": "不明", "notes": "工業地帯と門司港を走る北九州の大会", "official_url": "https://kitakyushu-marathon.jp/", "runnet_url": null, "closed_early": false, "popularity": 2, "feature": null, "sources": ["https://kitakyushu-marathon.jp/about/"]}, {"name": "京都マラソン", "location": "京都府京都市", "region": "関西", "sort_date": "2027-02-21", "entry_sort_date": "2026-07-16", "race_date": "2027-02-21", "race_date_note": null, "race_announced": true, "entry_start": "2026-07-16", "entry_note": null, "entry_announced": true, "entry_end": "2026-08-31", "entry_method": "抽選+先着", "canceled": false, "canceled_note": null, "capacity_full": 16000, "race_types": ["フル", "ペア駅伝"], "time_limit": "6時間", "course_profile": "不明", "notes": "たけびしスタジアム発、平安神宮へ", "official_url": "https://kyoto-marathon.com/", "runnet_url": null, "closed_early": false, "popularity": 3, "feature": null, "sources": ["https://kyoto-marathon.com/info/"]}, {"name": "熊本城マラソン", "location": "熊本県熊本市", "region": "九州・沖縄", "sort_date": "2027-02-21", "entry_sort_date": null, "race_date": "2027-02-21", "race_date_note": null, "race_announced": true, "entry_start": null, "entry_note": "2026年7月予定", "entry_announced": false, "entry_end": null, "entry_method": "抽選", "canceled": false, "canceled_note": null, "capacity_full": 13000, "race_types": ["フル", "30km", "ファンラン"], "time_limit": "7時間", "course_profile": "起伏あり", "notes": "熊本城へのラスト激坂が名物", "official_url": "https://kumamotojyo-marathon.jp/", "runnet_url": null, "closed_early": false, "popularity": 2, "feature": "ファンラン", "sources": ["https://kumamotojyo-marathon.jp/outline.php"]}, {"name": "世界遺産姫路城マラソン", "location": "兵庫県姫路市", "region": "関西", "sort_date": "2027-02-22", "entry_sort_date": "2026-08-04", "race_date": "2026-02-22", "race_date_note": null, "race_announced": false, "entry_start": "2025-08-04", "entry_note": null, "entry_announced": false, "entry_end": "2025-10-31", "entry_method": "先着", "canceled": true, "canceled_note": "2027年は施設改修のため休止予定", "capacity_full": 9000, "race_types": ["フル", "ファンラン"], "time_limit": "6時間", "course_profile": "不明", "notes": "2027年は施設改修のため休止予定", "official_url": "https://himeji-marathon.jp/", "runnet_url": null, "closed_early": false, "popularity": 2, "feature": null, "sources": ["https://himeji-marathon.jp/outline/"]}, {"name": "横島いちごマラソン大会/玉名いだてんマラソン", "location": "熊本県玉名市", "region": "九州・沖縄", "sort_date": "2027-02-22", "entry_sort_date": "2026-09-16", "race_date": "2026-02-22", "race_date_note": null, "race_announced": false, "entry_start": "2025-09-16", "entry_note": null, "entry_announced": false, "entry_end": null, "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 1000, "race_types": ["フル", "ハーフ", "10km", "5km"], "time_limit": "6時間", "course_profile": "フラット", "notes": "干拓地の田園地帯、いちご・トマト給水が名物", "official_url": "https://ichigo-marathon.jp/", "runnet_url": null, "closed_early": false, "popularity": 1, "feature": "記録狙い", "sources": ["https://ichigo-marathon.jp/outline/"]}, {"name": "そうじゃ吉備路マラソン", "location": "岡山県総社市", "region": "中国", "sort_date": "2027-02-22", "entry_sort_date": "2026-10-01", "race_date": "2026-02-22", "race_date_note": null, "race_announced": false, "entry_start": "2025-10-01", "entry_note": null, "entry_announced": false, "entry_end": "2026-01-03", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 2000, "race_types": ["フル", "ハーフ", "10km", "5km"], "time_limit": "6時間", "course_profile": "不明", "notes": "2027開催決定のみ発表・日程は準備中", "official_url": "https://soja-kibijimarathon.jp/", "runnet_url": null, "closed_early": false, "popularity": 1, "feature": null, "sources": ["https://soja-kibijimarathon.jp/event-details/"]}, {"name": "いわきサンシャインマラソン", "location": "福島県いわき市", "region": "東北", "sort_date": "2027-02-28", "entry_sort_date": "2026-09-11", "race_date": "2027-02-28", "race_date_note": null, "race_announced": true, "entry_start": "2026-09-11", "entry_note": null, "entry_announced": true, "entry_end": "2026-10-15", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 5000, "race_types": ["フル", "10km", "5km", "2km"], "time_limit": "6時間", "course_profile": "起伏あり", "notes": "22km地点の激坂が難所の高難度コース", "official_url": "https://iwaki-marathon.jp/", "runnet_url": null, "closed_early": false, "popularity": 2, "feature": "ファンラン", "sources": ["https://iwaki-marathon.jp/outline"]}, {"name": "大阪マラソン", "location": "大阪府大阪市", "region": "関西", "sort_date": "2027-02-28", "entry_sort_date": "2026-07-30", "race_date": "2027-02-28", "race_date_note": null, "race_announced": true, "entry_start": "2025-07-30", "entry_note": null, "entry_announced": false, "entry_end": "2025-08-29", "entry_method": "抽選", "canceled": false, "canceled_note": null, "capacity_full": 28420, "race_types": ["フル", "7.2km"], "time_limit": "7時間", "course_profile": "フラット", "notes": "御堂筋封鎖、高低差20m級のフラット高速コース", "official_url": "https://www.osaka-marathon.com/", "runnet_url": null, "closed_early": false, "popularity": 3, "feature": "両方", "sources": ["https://www.osaka-marathon.com/2026/info/course/"]}, {"name": "丹波篠山ABCマラソン", "location": "兵庫県丹波篠山市", "region": "関西", "sort_date": "2027-03-01", "entry_sort_date": "2026-10-01", "race_date": "2026-03-01", "race_date_note": null, "race_announced": false, "entry_start": "2025-10-01", "entry_note": null, "entry_announced": false, "entry_end": null, "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 8000, "race_types": ["フル", "リレー"], "time_limit": "6時間30分", "course_profile": "起伏あり", "notes": "篠山城跡発着、累計標高差約176mの緩起伏", "official_url": "https://tambasasayama-abc-marathon.jp/", "runnet_url": null, "closed_early": false, "popularity": 2, "feature": "ファンラン", "sources": ["https://tambasasayama-abc-marathon.jp/outline/"]}, {"name": "鹿児島マラソン", "location": "鹿児島県 鹿児島市・姶良市", "region": "九州・沖縄", "sort_date": "2027-03-07", "entry_sort_date": "2026-08-08", "race_date": "2027-03-07", "race_date_note": null, "race_announced": true, "entry_start": "2025-08-08", "entry_note": null, "entry_announced": false, "entry_end": "2025-11-16", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 10000, "race_types": ["フル", "ファンラン"], "time_limit": "7時間", "course_profile": "起伏あり", "notes": "桜島望む海岸沿い、細かいアップダウン多数", "official_url": "https://www.kagoshima-marathon.jp/", "runnet_url": null, "closed_early": false, "popularity": 2, "feature": "ファンラン", "sources": ["https://www.kagoshima-marathon.jp/about/"]}, {"name": "東京マラソン", "location": "東京都", "region": "関東", "sort_date": "2027-03-07", "entry_sort_date": "2026-08-14", "race_date": "2027-03-07", "race_date_note": null, "race_announced": true, "entry_start": "2026-08-14", "entry_note": null, "entry_announced": true, "entry_end": "2026-08-28", "entry_method": "抽選", "canceled": false, "canceled_note": null, "capacity_full": 40000, "race_types": ["フル"], "time_limit": "7時間", "course_profile": "フラット", "notes": "都庁前発・東京駅前フィニッシュの都市型", "official_url": "https://www.marathon.tokyo/", "runnet_url": null, "closed_early": false, "popularity": 3, "feature": "両方", "sources": ["https://www.marathon.tokyo/participants/guideline/"]}, {"name": "びわ湖マラソン", "location": "滋賀県 大津市・草津市・守山市", "region": "関西", "sort_date": "2027-03-14", "entry_sort_date": "2026-08-03", "race_date": "2027-03-14", "race_date_note": null, "race_announced": true, "entry_start": "2026-08-03", "entry_note": null, "entry_announced": true, "entry_end": null, "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 7000, "race_types": ["フル", "ペアリレー"], "time_limit": "6時間", "course_profile": "フラット", "notes": "琵琶湖畔の基本フラットコース", "official_url": "https://biwako-marathon.com/", "runnet_url": null, "closed_early": false, "popularity": 2, "feature": "記録狙い", "sources": ["https://biwako-marathon.com/"]}, {"name": "静岡マラソン", "location": "静岡県静岡市", "region": "東海", "sort_date": "2027-03-14", "entry_sort_date": "2026-10-02", "race_date": "2027-03-14", "race_date_note": null, "race_announced": true, "entry_start": "2025-10-02", "entry_note": null, "entry_announced": false, "entry_end": "2025-11-13", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 12000, "race_types": ["フル", "ファンラン"], "time_limit": "6時間", "course_profile": "フラット", "notes": "富士山・駿河湾望む平坦な高速コース", "official_url": "https://www.shizuoka-marathon.com/", "runnet_url": null, "closed_early": false, "popularity": 2, "feature": "両方", "sources": ["https://www.shizuoka-marathon.com/"]}, {"name": "鳥取マラソン", "location": "鳥取県鳥取市", "region": "中国", "sort_date": "2027-03-14", "entry_sort_date": "2026-10-15", "race_date": "2027-03-14", "race_date_note": null, "race_announced": true, "entry_start": "2025-10-15", "entry_note": null, "entry_announced": false, "entry_end": "2025-12-12", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": null, "race_types": ["フル"], "time_limit": "6時間", "course_profile": "起伏あり", "notes": "鳥取砂丘発ワンウェイ、最大高低差約40m", "official_url": "https://tottori-marathon.jp/", "runnet_url": null, "closed_early": false, "popularity": 1, "feature": "ファンラン", "sources": ["https://tottori-marathon.jp/about/"]}, {"name": "とくしまマラソン", "location": "徳島県 徳島市・吉野川市・阿波市・石井町・藍住町・上板町", "region": "四国", "sort_date": "2027-03-14", "entry_sort_date": "2026-09-30", "race_date": "2027-03-14", "race_date_note": null, "race_announced": true, "entry_start": "2025-09-30", "entry_note": null, "entry_announced": false, "entry_end": "2025-11-30", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 8500, "race_types": ["フル", "ファンラン"], "time_limit": "7時間", "course_profile": "フラット", "notes": "2027年20回記念で新コースに刷新予定", "official_url": "https://www.tokushima-marathon.jp/", "runnet_url": null, "closed_early": false, "popularity": 2, "feature": "記録狙い", "sources": ["https://www.tokushima-marathon.jp/join/entry.html"]}, {"name": "板橋Cityマラソン", "location": "東京都板橋区", "region": "関東", "sort_date": "2027-03-15", "entry_sort_date": "2026-08-01", "race_date": "2026-03-15", "race_date_note": null, "race_announced": false, "entry_start": "2025-08-01", "entry_note": null, "entry_announced": false, "entry_end": "2025-11-24", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": null, "race_types": ["フル"], "time_limit": "7時間", "course_profile": "フラット", "notes": "荒川河川敷、完走率95%超のフラットコース", "official_url": "https://i-c-m.jp/", "runnet_url": null, "closed_early": false, "popularity": 1, "feature": "記録狙い", "sources": ["https://i-c-m.jp/guideline/"]}, {"name": "かがわマラソン", "location": "香川県高松市・綾川町", "region": "四国", "sort_date": "2027-03-21", "entry_sort_date": "2026-10-06", "race_date": "2027-03-21", "race_date_note": null, "race_announced": true, "entry_start": "2025-10-06", "entry_note": null, "entry_announced": false, "entry_end": "2025-11-24", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 10000, "race_types": ["フル", "ファンラン"], "time_limit": "6時間", "course_profile": "起伏あり", "notes": "瀬戸内海・栗林公園、高低差67m", "official_url": "https://kagawa-marathon.com/", "runnet_url": null, "closed_early": false, "popularity": 2, "feature": "ファンラン", "sources": ["https://kagawa-marathon.com/information/essentials/"]}, {"name": "さが桜マラソン", "location": "佐賀県 佐賀市・神埼市", "region": "九州・沖縄", "sort_date": "2027-03-22", "entry_sort_date": "2026-10-01", "race_date": "2026-03-22", "race_date_note": null, "race_announced": false, "entry_start": "2025-10-01", "entry_note": null, "entry_announced": false, "entry_end": "2025-10-21", "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 8500, "race_types": ["フル", "ファンラン"], "time_limit": "6時間30分", "course_profile": "フラット", "notes": "高低差10m、国内屈指のフラットコース", "official_url": "https://sagasakura-marathon.jp/", "runnet_url": null, "closed_early": false, "popularity": 2, "feature": "記録狙い", "sources": ["https://sagasakura-marathon.jp/outline/"]}, {"name": "ふくい桜マラソン", "location": "福井県 福井市・坂井市", "region": "北陸・甲信越", "sort_date": "2027-03-28", "entry_sort_date": "2026-09-20", "race_date": "2027-03-28", "race_date_note": null, "race_announced": true, "entry_start": "2026-09-20", "entry_note": null, "entry_announced": true, "entry_end": null, "entry_method": "先着", "canceled": false, "canceled_note": null, "capacity_full": 13200, "race_types": ["フル", "5km"], "time_limit": "7時間", "course_profile": "フラット", "notes": "高低差15m、軌跡が恐竜の形になるコース", "official_url": "https://www.fukui-sakura-marathon.jp/", "runnet_url": null, "closed_early": false, "popularity": 2, "feature": "両方", "sources": ["https://www.fukui-sakura-marathon.jp/about/"]}]}</script>
+<script>
+const DATA = JSON.parse(document.getElementById('race-data').textContent);
+const HOLIDAYS = {
+  "2026-08-11":1,"2026-09-21":1,"2026-09-23":1,"2026-10-12":1,"2026-11-03":1,
+  "2026-11-23":1,"2027-01-01":1,"2027-01-11":1,"2027-02-11":1,"2027-02-23":1,
+  "2027-03-21":1,"2027-03-22":1
+};
+const WD = ["日","月","火","水","木","金","土"];
+const today = new Date(); today.setHours(0,0,0,0);
+
+function d(iso){ if(!iso) return null; const [y,m,dd]=iso.split("-").map(Number); return new Date(y,m-1,dd); }
+function isRedDay(iso){ const dt=d(iso); return dt && (dt.getDay()===0 || dt.getDay()===6 || HOLIDAYS[iso]); }
+function wdLabel(iso){
+  const dt = d(iso); if(!dt) return "";
+  const w = WD[dt.getDay()];
+  if(HOLIDAYS[iso] && dt.getDay()!==0 && dt.getDay()!==6) return `(${w}・祝)`;
+  return `(${w})`;
+}
+function fmtFull(iso){ const dt=d(iso); return dt?`${dt.getFullYear()}年${dt.getMonth()+1}月${dt.getDate()}日${wdLabel(iso)}`:""; }
+function fmtShort(iso){ const dt=d(iso); return dt?`${dt.getFullYear()}/${dt.getMonth()+1}/${dt.getDate()}${wdLabel(iso)}`:""; }
+function daysUntil(iso){ return Math.round((d(iso)-today)/86400000); }
+
+function status(r){
+  if(r.canceled) return {key:"closed", cls:"closed", label:"次回休止"};
+  if(!r.entry_announced) return {key:"tba", cls:"tba", label:"未発表"};
+  if(r.closed_early) return {key:"closed", cls:"soldout", label:"定員締切"};
+  const s = d(r.entry_start);
+  if(today < s){
+    const n = daysUntil(r.entry_start);
+    return {key:"before", cls:"before", label: n<=14?`開始前・あと${n}日`:"開始前"};
+  }
+  if(r.entry_end && today > d(r.entry_end)) return {key:"closed", cls:"closed", label:"受付終了"};
+  return {key:"open", cls:"open", label:"エントリー受付中"};
+}
+
+const FILTERS = [
+  {id:"status", label:"状況", opts:["受付中","開始前","未発表","終了"],
+   test:(r,v)=>({"受付中":"open","開始前":"before","未発表":"tba","終了":"closed"}[v])===status(r).key},
+  {id:"method", label:"方式", opts:["抽選","先着"],
+   test:(r,v)=>(r.entry_method||"").includes(v)},
+  {id:"month", label:"開催月", opts:["8月","9月","10月","11月","12月","1月","2月","3月"],
+   test:(r,v)=>(r.sort_date||r.race_date) && (d(r.sort_date||r.race_date).getMonth()+1)+"月"===v},
+  {id:"region", label:"地方", opts:["北海道","東北","関東","北陸・甲信越","東海","関西","中国","四国","九州・沖縄"],
+   test:(r,v)=>r.region===v},
+  {id:"feature", label:"特徴", opts:["記録狙い","ファンラン","両方"],
+   test:(r,v)=>r.feature===v},
+];
+const active = {};
+FILTERS.forEach(f=>active[f.id]=new Set());
+
+function matchesSearch(r){
+  const q = document.getElementById("q").value.trim();
+  return !q || (r.name+r.location+(r.notes||"")).includes(q);
+}
+function passes(r, exceptId){
+  if(!matchesSearch(r)) return false;
+  for(const f of FILTERS){
+    if(f.id===exceptId) continue;
+    if(active[f.id].size && ![...active[f.id]].some(v=>f.test(r,v))) return false;
+  }
+  return true;
+}
+function optionCount(f, v){
+  return DATA.races.filter(r=>passes(r, f.id) && f.test(r,v)).length;
+}
+
+function buildChips(){
+  const box = document.getElementById("chiprows");
+  box.innerHTML = "";
+  for(const f of FILTERS){
+    const row = document.createElement("div"); row.className="chiprow";
+    row.innerHTML = `<span class="rowlabel">${f.label}</span>`;
+    for(const o of f.opts){
+      const b = document.createElement("button");
+      b.className = "chip" + (active[f.id].has(o)?" on":"");
+      b.innerHTML = `${o}<span class="cnt">${optionCount(f,o)}</span>`;
+      b.onclick = ()=>{ active[f.id].has(o)?active[f.id].delete(o):active[f.id].add(o); render(); };
+      row.appendChild(b);
+    }
+    box.appendChild(row);
+  }
+}
+
+function filtered(){
+  let rs = DATA.races.filter(r=>passes(r, null));
+  const mode = document.getElementById("sort").value;
+  const sd = r=>r.sort_date||r.race_date||"9999";
+  const ed = r=>r.entry_sort_date||r.entry_start||"9999";
+  if(mode==="entry") rs.sort((a,b)=>ed(a).localeCompare(ed(b)));
+  else if(mode==="pop") rs.sort((a,b)=>(b.popularity-a.popularity)||sd(a).localeCompare(sd(b)));
+  else rs.sort((a,b)=>sd(a).localeCompare(sd(b)));
+  return rs;
+}
+
+function esc(s){ return String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+function dtile(r){
+  if(r.race_announced && r.race_date){
+    const dt = d(r.race_date);
+    const w = wdLabel(r.race_date);
+    return `<div class="dtile"><span class="dt-m">${dt.getMonth()+1}月</span><span class="dt-d">${dt.getDate()}</span><span class="dt-w${isRedDay(r.race_date)?" red":""}">${w}</span></div>`;
+  }
+  const base = r.sort_date||r.race_date;
+  const m = base ? (d(base).getMonth()+1)+"月" : "—";
+  return `<div class="dtile"><span class="dt-m">${m}</span><span class="dt-d tbd">未定</span></div>`;
+}
+
+function rowHtml(r){
+  const st = status(r);
+  const badge = `<span class="badge ${st.cls}">${st.label}</span>`;
+  const method = r.entry_method && r.entry_method!=="不明" ? `<span class="pill">${esc(r.entry_method)}</span>` : "";
+
+  let dateHtml = r.race_announced
+    ? `<span>開催 <b>${fmtFull(r.race_date)}</b>${r.race_date_note?`<span class="note">${esc(r.race_date_note)}</span>`:""}</span>`
+    : `<span class="prev">前回開催 ${fmtShort(r.race_date)}（新日程 未発表）</span>`;
+
+  let entryHtml = "";
+  if(r.entry_announced){
+    let e = `エントリー <b>${fmtShort(r.entry_start)}</b>`;
+    if(r.entry_end) e += ` 〜 ${fmtShort(r.entry_end)}`;
+    if(st.key==="before" && daysUntil(r.entry_start)<=14) e = `<span class="deadline">${e}</span>`;
+    entryHtml = `<span>${e}</span>`;
+  }else{
+    entryHtml = `<span class="prev">前回エントリー開始 ${r.entry_start?fmtShort(r.entry_start):"—"}${r.entry_note?`・${esc(r.entry_note)}`:""}</span>`;
+  }
+
+  const lim = r.time_limit ? `<span>制限 ${esc(r.time_limit)}</span>` : "";
+  const types = (r.race_types||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join("");
+  const feat = r.feature && !(r.race_types||[]).includes(r.feature) ? `<span class="tag outline">${esc(r.feature)}</span>` : "";
+  const course = r.course_profile && r.course_profile!=="不明" ? `<span class="tag outline">${esc(r.course_profile)}</span>` : "";
+  const notes = r.notes ? `<span class="note">${esc(r.notes)}</span>` : "";
+  const pop = `<span class="pop"><span class="poplabel">人気</span>${"●".repeat(r.popularity)}<span class="off">${"●".repeat(3-r.popularity)}</span></span>`;
+  const cap = r.capacity_full ? `<span class="cap">定員 ${r.capacity_full.toLocaleString()}人</span>` : "";
+  const links = `<span class="links">${r.official_url?`<a href="${esc(r.official_url)}" target="_blank" rel="noopener">公式サイト</a>`:""}${r.runnet_url?`<a class="sub" href="${esc(r.runnet_url)}" target="_blank" rel="noopener">RUNNET</a>`:""}</span>`;
+
+  return `<div class="row">
+    ${dtile(r)}
+    <div class="main">
+      <div class="titleline">${badge}<span class="rname">${esc(r.name)}</span>${method}</div>
+      <div class="meta"><span>${esc(r.location)}</span>${dateHtml}${lim}</div>
+      <div class="meta">${entryHtml}</div>
+      <div class="tagline">${types}${feat}${course}${notes}</div>
+    </div>
+    <div class="side">${pop}${cap}${links}</div>
+  </div>`;
+}
+
+function render(){
+  const rs = filtered();
+  document.getElementById("list").innerHTML =
+    rs.length ? rs.map(rowHtml).join("") : `<div class="empty">条件に合う大会がありません</div>`;
+  document.getElementById("count").innerHTML = `検索結果 <b>${rs.length}</b>件<span class="total"> / 全${DATA.races.length}大会</span>`;
+  buildChips();
+
+  const all = DATA.races;
+  const nOpen = all.filter(r=>status(r).key==="open").length;
+  const nSoon = all.filter(r=>{const s=status(r);return s.key==="before"&&daysUntil(r.entry_start)<=14;}).length;
+  const nTba = all.filter(r=>status(r).key==="tba").length;
+  document.getElementById("stats").innerHTML = `
+    <div class="stat"><div class="num hot">${nOpen}</div><div class="label">エントリー受付中</div></div>
+    <div class="stat"><div class="num soon">${nSoon}</div><div class="label">14日以内にエントリー開始</div></div>
+    <div class="stat"><div class="num">${nTba}</div><div class="label">新日程 未発表</div></div>
+    <div class="stat"><div class="num">${all.length}</div><div class="label">掲載大会</div></div>`;
+}
+
+document.getElementById("q").addEventListener("input", render);
+document.getElementById("sort").addEventListener("change", render);
+render();
+</script>
+</body>
+</html>

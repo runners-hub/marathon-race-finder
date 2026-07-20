@@ -108,6 +108,10 @@ select{
 .links a{color:var(--orange);font-weight:700;text-decoration:none;padding:4px 0}
 .links a:hover{text-decoration:underline}
 .links a.sub{color:var(--gray2);font-weight:400;margin-left:10px}
+.myrow{display:flex;gap:4px;justify-content:flex-end;flex-wrap:wrap}
+.mychip{border:1px solid var(--line);border-radius:999px;padding:1px 9px;font-size:11px;color:var(--gray);background:var(--white);cursor:pointer;font-family:inherit;letter-spacing:0.04em}
+.mychip:hover{background:var(--tint2)}
+.mychip.on{background:var(--tint);border-color:var(--crimson);color:var(--crimson);font-weight:700}
 .empty{padding:60px 0;text-align:center;color:var(--gray2);font-size:14px}
 footer{border-top:1px solid var(--line);padding:20px 0 40px;font-size:11px;color:var(--gray2);line-height:1.9}
 footer a{color:var(--gray2)}
@@ -126,7 +130,7 @@ footer a{color:var(--gray2)}
   .dtile{width:auto;flex-direction:row;gap:3px;padding:2px 10px;align-items:baseline;border:none;background:var(--tint2);border-radius:999px}
   .dt-d{font-size:15px}
   .dt-d.tbd{padding:0;font-size:12px}
-  .side{width:100%;flex-direction:row;justify-content:space-between;align-items:center;text-align:left}
+  .side{width:100%;flex-direction:row;justify-content:space-between;align-items:center;text-align:left;flex-wrap:wrap;row-gap:8px}
 }
 @media(max-width:420px){
   .rescount .total{display:none}
@@ -204,6 +208,16 @@ function status(r){
   return {key:"open", cls:"open", label:"エントリー受付中"};
 }
 
+// マイリスト（この端末のブラウザにのみ保存）
+const MY_CATS = [{key:"kiroku",label:"記録"},{key:"fun",label:"楽しむ"},{key:"oinori",label:"お祈り"}];
+let myRaces = {};
+try{ myRaces = JSON.parse(localStorage.getItem("mrf_myraces")||"{}"); }catch(e){}
+function setMy(name, key){
+  if(myRaces[name]===key) delete myRaces[name]; else myRaces[name]=key;
+  try{ localStorage.setItem("mrf_myraces", JSON.stringify(myRaces)); }catch(e){}
+  render();
+}
+
 const FILTERS = [
   {id:"status", label:"状況", opts:["受付中","開始前","未発表","終了"],
    test:(r,v)=>({"受付中":"open","開始前":"before","未発表":"tba","終了":"closed"}[v])===status(r).key},
@@ -215,6 +229,8 @@ const FILTERS = [
    test:(r,v)=>r.region===v},
   {id:"feature", label:"特徴", opts:["記録狙い","ファンラン","両方"],
    test:(r,v)=>r.feature===v},
+  {id:"my", label:"マイリスト", opts:["記録","楽しむ","お祈り"],
+   test:(r,v)=>myRaces[r.name]===({"記録":"kiroku","楽しむ":"fun","お祈り":"oinori"}[v])},
 ];
 const active = {};
 FILTERS.forEach(f=>active[f.id]=new Set());
@@ -247,6 +263,11 @@ function buildChips(){
       b.innerHTML = `${o}<span class="cnt">${optionCount(f,o)}</span>`;
       b.onclick = ()=>{ active[f.id].has(o)?active[f.id].delete(o):active[f.id].add(o); render(); };
       row.appendChild(b);
+    }
+    if(f.id==="my"){
+      const n = document.createElement("span");
+      n.className = "note"; n.textContent = "この端末のブラウザにのみ保存";
+      row.appendChild(n);
     }
     box.appendChild(row);
   }
@@ -304,6 +325,10 @@ function rowHtml(r){
   const cap = r.capacity_full ? `<span class="cap">定員 ${r.capacity_full.toLocaleString()}人</span>` : "";
   const links = `<span class="links">${r.official_url?`<a href="${esc(r.official_url)}" target="_blank" rel="noopener">公式サイト</a>`:""}${r.runnet_url?`<a class="sub" href="${esc(r.runnet_url)}" target="_blank" rel="noopener">RUNNET</a>`:""}</span>`;
 
+  const myrow = `<span class="myrow">${MY_CATS.map(c=>
+    `<button class="mychip${myRaces[r.name]===c.key?" on":""}" data-name="${esc(r.name)}" data-cat="${c.key}">${c.label}</button>`
+  ).join("")}</span>`;
+
   return `<div class="row">
     ${dtile(r)}
     <div class="main">
@@ -312,7 +337,7 @@ function rowHtml(r){
       <div class="meta">${entryHtml}</div>
       <div class="tagline">${types}${feat}${course}${notes}</div>
     </div>
-    <div class="side">${pop}${cap}${links}</div>
+    <div class="side">${myrow}${pop}${cap}${links}</div>
   </div>`;
 }
 
@@ -336,6 +361,10 @@ function render(){
 
 document.getElementById("q").addEventListener("input", render);
 document.getElementById("sort").addEventListener("change", render);
+document.getElementById("list").addEventListener("click", e=>{
+  const b = e.target.closest(".mychip");
+  if(b) setMy(b.dataset.name, b.dataset.cat);
+});
 render();
 </script>
 </body>

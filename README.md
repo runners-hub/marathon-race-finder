@@ -2,7 +2,7 @@
 
 全国の主要フルマラソン大会（2026-27シーズン）を、エントリー日・抽選/先着・エントリー状況つきで検索できる一覧サイトです。
 
-https://kazuto32desu.github.io/marathon-race-finder/
+https://runners-hub.github.io/marathon-race-finder/
 
 ## できること
 

@@ -135,6 +135,45 @@ details.more[open] summary{color:var(--crimson)}
 .catpill{background:var(--ink);color:var(--white);border-radius:4px;padding:1px 8px;font-size:11px;font-weight:700;white-space:nowrap}
 .catpill.half{background:#3A6EA5}.catpill.fun{background:var(--orange)}.catpill.overseas{background:#2E7D5B}
 a:focus-visible,button:focus-visible,summary:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+/* 表示切替タブ */
+.viewtabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:0 0 14px}
+.vtab{border:none;background:none;font-family:inherit;font-size:14px;font-weight:700;color:var(--gray2);padding:8px 16px;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-1px}
+.vtab[aria-selected="true"]{color:var(--crimson);border-bottom-color:var(--crimson)}
+/* カレンダーに追加 */
+details.addcal{font-size:12px}
+details.addcal summary{cursor:pointer;color:var(--gray);list-style:none;border:1px solid var(--line);border-radius:999px;padding:1px 10px;display:inline-block}
+details.addcal summary::-webkit-details-marker{display:none}
+details.addcal[open] summary{border-color:var(--crimson);color:var(--crimson)}
+.calmenu{display:flex;flex-direction:column;align-items:flex-end;gap:2px;margin-top:4px}
+.calmenu a{color:var(--orange);font-weight:700;text-decoration:none;padding:2px 0}
+.calmenu a:hover{text-decoration:underline}
+.calmenu .est{color:var(--gray2);font-weight:400;font-size:11px}
+/* カレンダー表示 */
+.calbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px;font-size:13px;color:var(--gray)}
+.calbar .legend{display:flex;gap:12px;flex-wrap:wrap}
+.ev{display:block;border-radius:4px;padding:1px 6px;font-size:11px;line-height:1.5;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-decoration:none;cursor:pointer}
+.ev.entry{background:var(--orange);color:var(--white)}
+.ev.deadline{background:var(--white);color:var(--crimson);border:1px solid var(--crimson)}
+.ev.race{background:var(--crimson);color:var(--white)}
+.ev.est{opacity:.55;border-style:dashed}
+.month{border:1px solid var(--line);border-radius:10px;background:var(--white);margin-bottom:16px;overflow:hidden}
+.month h3{font-size:15px;font-weight:700;padding:10px 14px;border-bottom:1px solid var(--line)}
+.mgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.mgrid .wd{font-size:11px;color:var(--gray2);text-align:center;padding:4px 0;border-bottom:1px solid var(--line)}
+.mgrid .day{min-height:78px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:3px 4px;min-width:0}
+.mgrid .day:nth-child(7n){border-right:none}
+.mgrid .day .n{font-size:11px;color:var(--gray)}
+.mgrid .day.red .n{color:var(--crimson);font-weight:700}
+.mgrid .day.today{background:var(--tint)}
+.mgrid .day.blank{background:#FAFAF8}
+.agenda{display:none;padding:6px 14px 12px}
+.agenda li{list-style:none;display:flex;gap:10px;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.agenda li:last-child{border-bottom:none}
+.agenda .ad{font-family:"Helvetica Neue",sans-serif;font-weight:700;min-width:64px}
+.agenda .ev{display:inline-block;margin:0;flex-shrink:0}
+.calempty{padding:40px 16px;text-align:center;color:var(--gray);font-size:14px;line-height:1.9;border:1px dashed var(--line);border-radius:10px}
+.icsbtn{border:1px solid var(--crimson);color:var(--crimson);background:var(--white);border-radius:999px;padding:5px 14px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
+@media(max-width:640px){ .mgrid{display:none} .agenda{display:block} }
 .empty{padding:60px 0;text-align:center;color:var(--gray2);font-size:14px}
 footer{border-top:1px solid var(--line);padding:20px 0 40px;font-size:11px;color:var(--gray2);line-height:1.9}
 footer a{color:var(--gray2)}
@@ -178,6 +217,11 @@ footer a{color:var(--gray2)}
   <div class="chiprows" id="chiprows"></div>
 </div>
 
+<div class="viewtabs" role="tablist">
+  <button class="vtab" role="tab" id="tab-list" aria-selected="true" aria-controls="view-list">大会一覧</button>
+  <button class="vtab" role="tab" id="tab-cal" aria-selected="false" aria-controls="view-cal">カレンダー</button>
+</div>
+<div id="view-list" role="tabpanel" aria-labelledby="tab-list">
 <div class="resulthead">
   <h2>大会検索結果一覧</h2>
   <select id="sort">
@@ -192,6 +236,18 @@ footer a{color:var(--gray2)}
 </div>
 
 <div class="results" id="list"></div>
+</div>
+<div id="view-cal" role="tabpanel" aria-labelledby="tab-cal" hidden>
+  <div class="calbar">
+    <select id="calsrc" aria-label="表示する大会">
+      <option value="my">マイリストの大会</option>
+      <option value="filter">今の絞り込み結果（受付開始のみ）</option>
+    </select>
+    <span class="legend"><span class="ev entry" style="display:inline-block">受付開始</span><span class="ev deadline" style="display:inline-block">締切</span><span class="ev race" style="display:inline-block">本番</span><span class="ev entry est" style="display:inline-block">点線＝見込み</span></span>
+    <button class="icsbtn" id="icsbtn" hidden>マイリストをカレンダー用ファイル(.ics)で保存</button>
+  </div>
+  <div id="calview"></div>
+</div>
 
 <footer>
   掲載情報は各大会公式サイト等の調査に基づく参考情報です（調査日 2026-09-28）。エントリー前に必ず大会公式サイトで最新情報を確認してください。
@@ -357,6 +413,115 @@ function detailHtml(r){
     ${src?f("出典", src, true):""}
   </dl></details>`;
 }
+// ===== カレンダー =====
+function addDays(iso, n){ const dt=d(iso); dt.setDate(dt.getDate()+n); return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}`; }
+function raceEvents(r){
+  const ev = [];
+  const push = (kind, iso, est) => { if(iso && daysUntil(iso) >= -1) ev.push({kind, iso, est, r}); };
+  if(r.entry_announced){ push("entry", r.entry_start, false); push("deadline", r.entry_end, false); }
+  else if(r.entry_sort_date) push("entry", r.entry_sort_date, true);
+  if(r.race_announced) push("race", r.race_date, false);
+  else if(r.sort_date) push("race", r.sort_date, true);
+  return ev;
+}
+const KIND = {entry:"受付開始", deadline:"締切", race:"本番"};
+function evTitle(e){ return `${e.kind==="race"?"🏃 ":"【"+KIND[e.kind]+"】"}${e.r.name}${e.est?"（見込み）":""}`; }
+function evDetails(e){
+  const r = e.r, x = r.detail||{};
+  return [
+    `${KIND[e.kind]}: ${fmtFull(e.iso)}${e.est?"（前回実績からの見込み・公式発表を確認）":""}`,
+    r.entry_method ? `方式: ${r.entry_method}` : "",
+    r.entry_note ? `メモ: ${r.entry_note}` : "",
+    x.fee ? `参加費: ${x.fee}` : "",
+    r.official_url ? `公式: ${r.official_url}` : "",
+    "— マラソン大会ファインダーより"
+  ].filter(Boolean).join("\n");
+}
+function gcalUrl(e){
+  const s = e.iso.replace(/-/g,""), en = addDays(e.iso,1).replace(/-/g,"");
+  return "https://calendar.google.com/calendar/render?action=TEMPLATE"
+    + "&text=" + encodeURIComponent(evTitle(e))
+    + "&dates=" + s + "/" + en
+    + "&details=" + encodeURIComponent(evDetails(e))
+    + "&location=" + encodeURIComponent(e.r.location||"");
+}
+function calMenu(r){
+  const ev = raceEvents(r);
+  if(!ev.length) return "";
+  return `<details class="addcal"><summary>カレンダーに追加</summary><span class="calmenu">${
+    ev.map(e=>`<a href="${esc(gcalUrl(e))}" target="_blank" rel="noopener">${KIND[e.kind]} ${fmtShort(e.iso)}${e.est?'<span class="est">（見込み）</span>':""}</a>`).join("")
+  }</span></details>`;
+}
+function calRaces(){
+  if(document.getElementById("calsrc").value==="my") return DATA.races.filter(r=>myRaces[r.name]);
+  return filtered();
+}
+function calEvents(){
+  const src = document.getElementById("calsrc").value;
+  let ev = calRaces().flatMap(raceEvents);
+  if(src==="filter") ev = ev.filter(e=>e.kind==="entry");
+  return ev.sort((a,b)=>a.iso.localeCompare(b.iso));
+}
+function evChip(e){ return `<a class="ev ${e.kind}${e.est?" est":""}" href="#r-${esc(e.r.id)}" data-id="${esc(e.r.id)}" title="${esc(evTitle(e))}">${esc(KIND[e.kind])} ${esc(e.r.name)}</a>`; }
+function renderCal(){
+  const box = document.getElementById("calview");
+  const ev = calEvents();
+  const src = document.getElementById("calsrc").value;
+  document.getElementById("icsbtn").hidden = !(src==="my" && ev.length && /github\.io$/.test(location.hostname));
+  if(!ev.length){
+    box.innerHTML = src==="my"
+      ? `<div class="calempty">マイリストに大会がまだありません。<br>「大会一覧」で気になる大会の「記録」「楽しむ」「お祈り」を押すと、受付開始・締切・本番がここに並びます。</div>`
+      : `<div class="calempty">今の絞り込み条件では、これからの予定がありません。</div>`;
+    return;
+  }
+  const byMonth = {};
+  ev.forEach(e=>{ const k=e.iso.slice(0,7); (byMonth[k]=byMonth[k]||[]).push(e); });
+  box.innerHTML = Object.keys(byMonth).sort().map(k=>{
+    const [y,m] = k.split("-").map(Number);
+    const first = new Date(y,m-1,1), days = new Date(y,m,0).getDate();
+    const items = byMonth[k];
+    let cells = WD.map(w=>`<div class="wd">${w}</div>`).join("");
+    for(let i=0;i<first.getDay();i++) cells += `<div class="day blank"></div>`;
+    for(let dd=1; dd<=days; dd++){
+      const iso = `${k}-${String(dd).padStart(2,"0")}`;
+      const dayEv = items.filter(e=>e.iso===iso);
+      const isToday = daysUntil(iso)===0;
+      cells += `<div class="day${isRedDay(iso)?" red":""}${isToday?" today":""}"><span class="n">${dd}</span>${dayEv.map(evChip).join("")}</div>`;
+    }
+    const rest = (7 - (first.getDay()+days)%7)%7;
+    for(let i=0;i<rest;i++) cells += `<div class="day blank"></div>`;
+    const agenda = items.map(e=>`<li><span class="ad">${d(e.iso).getMonth()+1}/${d(e.iso).getDate()}${wdLabel(e.iso)}</span>${evChip(e)}</li>`).join("");
+    return `<section class="month"><h3>${y}年${m}月</h3><div class="mgrid">${cells}</div><ul class="agenda">${agenda}</ul></section>`;
+  }).join("");
+}
+function icsText(){
+  const now = new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d+/,"");
+  const escI = s => String(s).replace(/\\/g,"\\\\").replace(/\n/g,"\\n").replace(/[,;]/g,m=>"\\"+m);
+  const lines = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//marathon-race-finder//JA","CALSCALE:GREGORIAN","X-WR-CALNAME:マラソン マイリスト"];
+  calEvents().forEach(e=>{
+    lines.push("BEGIN:VEVENT",
+      `UID:${e.r.id}-${e.kind}-${e.iso}@marathon-race-finder`,
+      `DTSTAMP:${now}`,
+      `DTSTART;VALUE=DATE:${e.iso.replace(/-/g,"")}`,
+      `DTEND;VALUE=DATE:${addDays(e.iso,1).replace(/-/g,"")}`,
+      `SUMMARY:${escI(evTitle(e))}`,
+      `DESCRIPTION:${escI(evDetails(e))}`,
+      `LOCATION:${escI(e.r.location||"")}`);
+    if(e.kind!=="race") lines.push("BEGIN:VALARM","ACTION:DISPLAY",`DESCRIPTION:${escI(evTitle(e))}`,"TRIGGER:-PT15H","END:VALARM");
+    lines.push("END:VEVENT");
+  });
+  lines.push("END:VCALENDAR");
+  return lines.join("\r\n");
+}
+function setView(v){
+  const cal = v==="cal";
+  document.getElementById("view-list").hidden = cal;
+  document.getElementById("view-cal").hidden = !cal;
+  document.getElementById("tab-list").setAttribute("aria-selected", String(!cal));
+  document.getElementById("tab-cal").setAttribute("aria-selected", String(cal));
+  try{ localStorage.setItem("mrf_view", v); }catch(e){}
+  if(cal) renderCal();
+}
 function rowHtml(r){
   const st = status(r);
   const badge = `<span class="badge ${st.cls}">${st.label}</span>`;
@@ -399,7 +564,7 @@ function rowHtml(r){
       ${r.detail?`<div class="meta"><span class="scores">記録 <b>${dots(r.detail.pb)}</b></span><span class="scores">楽しさ <b>${dots(r.detail.fun)}</b></span><span class="scores">友達 <b>${dots(r.detail.friends)}</b></span></div>`:""}
       ${detailHtml(r)}${r.stale?`<div class="meta"><span class="prev">※ 詳細調査なし・受付状況は8月時点のデータ</span></div>`:""}
     </div>
-    <div class="side">${myrow}${pop}${cap}${links}</div>
+    <div class="side">${myrow}${pop}${cap}${links}${calMenu(r)}</div>
   </div>`;
 }
 
@@ -409,6 +574,7 @@ function render(){
     rs.length ? rs.map(rowHtml).join("") : `<div class="empty">条件に合う大会がありません</div>`;
   document.getElementById("count").innerHTML = `検索結果 <b>${rs.length}</b>件<span class="total"> / 全${DATA.races.length}大会</span>`;
   buildChips();
+  if(!document.getElementById("view-cal").hidden) renderCal();
 
   const all = DATA.races;
   const nOpen = all.filter(r=>status(r).key==="open").length;
@@ -422,6 +588,23 @@ function render(){
 }
 
 document.getElementById("q").addEventListener("input", render);
+document.getElementById("tab-list").addEventListener("click", ()=>setView("list"));
+document.getElementById("tab-cal").addEventListener("click", ()=>setView("cal"));
+document.getElementById("calsrc").addEventListener("change", renderCal);
+document.getElementById("calview").addEventListener("click", e=>{
+  const a = e.target.closest("a.ev"); if(!a) return;
+  e.preventDefault();
+  setView("list");
+  let row = document.getElementById("r-"+a.dataset.id);
+  if(!row){ Object.values(active).forEach(s=>s.clear()); document.getElementById("q").value=""; render(); row = document.getElementById("r-"+a.dataset.id); }
+  if(row){ row.scrollIntoView({block:"start"}); const det=row.querySelector("details.more"); if(det) det.open=true; }
+});
+document.getElementById("icsbtn").addEventListener("click", ()=>{
+  const blob = new Blob([icsText()], {type:"text/calendar;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = "marathon-mylist.ics";
+  document.body.appendChild(a); a.click(); a.remove();
+});
 document.getElementById("sort").addEventListener("change", render);
 document.getElementById("list").addEventListener("click", e=>{
   const b = e.target.closest(".mychip");
@@ -448,6 +631,9 @@ document.getElementById("urgent").addEventListener("click", e=>{
   const det = row.querySelector("details.more"); if(det) det.open = true;
 });
 render();
+{ let v = "list"; try{ v = localStorage.getItem("mrf_view") || "list"; }catch(e){}
+  if(location.hash==="#calendar") v = "cal";
+  setView(v); }
 </script>
 </body>
 </html>
